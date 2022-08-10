@@ -21,6 +21,7 @@ enum ButtonType {
 
 
 //TODO :: change Mino class to abstract class -> how to make abstract class copyWith function
+// TODO :: this is VO cannot use setter inside this class
 class Mino {
   final Color color;
   List<Block> blocks;
@@ -53,84 +54,56 @@ class Mino {
     this.rotateCenterLocation,
   });
 
-  void changeRotate() {
+  Rotate _changeRotate() {
     switch(blockRotate) {
       case Rotate.rotate0:
-        blockRotate = Rotate.rotate90;
-        break;
+        return Rotate.rotate90;
       case Rotate.rotate90:
-        blockRotate = Rotate.rotate180;
-        break;
+        return  Rotate.rotate180;
       case Rotate.rotate180:
-        blockRotate = Rotate.rotate270;
-        break;
+        return Rotate.rotate270;
       default:
-        blockRotate = Rotate.rotate0;
-        break;
+        return blockRotate = Rotate.rotate0;
     }
   }
 
-  void changeMinoLocationWhenRotateChange() {}
+  Mino changeMinoLocationWhenRotateChange() {}
 
-  void moveMinoLeft() {
-    List<Block> newBlock = [];
-
-    for (Block block in blocks) {
-      newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation  - 1)));
-    }
-    blocks = [...newBlock];
-    rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation - 1);
+  Mino moveMinoLeft() {
+    return Mino(
+        color: color,
+        blocks: [
+          for (Block block in blocks)
+            block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation - 1))
+        ],
+        rotateCenterLocation: rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation - 1),
+        blockRotate: blockRotate
+    );
   }
 
-  void moveMinoRight() {
-    List<Block> newBlock = [];
-
-    for (Block block in blocks) {
-      newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation  + 1)));
-    }
-    blocks = [...newBlock];
-    rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation + 1);
+  Mino moveMinoRight() {
+    return Mino(
+        color: color,
+        blocks: [
+          for (Block block in blocks)
+            block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation + 1))
+        ],
+        rotateCenterLocation: rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation + 1),
+        blockRotate: blockRotate
+    );
   }
 
-  void moveMinoDown() {
-    List<Block> newBlock = [];
-
-    for (Block block in blocks) {
-      newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(yLocation: block.blockLocation.yLocation  - 1)));
-    }
-    blocks = [...newBlock];
-    rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.yLocation - 1);
+  Mino moveMinoDown() {
+    return Mino(
+        color: color,
+        blocks: [
+          for (Block block in blocks)
+            block.copyWith(blockLocation: block.blockLocation.copyWith(yLocation: block.blockLocation.yLocation - 1))
+        ],
+        rotateCenterLocation: rotateCenterLocation!.copyWith(yLocation: rotateCenterLocation!.yLocation - 1),
+        blockRotate: blockRotate
+    );
   }
-
-  //TODO :: think if Mino need to depend on buttonType i think button type is need to be depend to game only
-  //TODO :: this Button Type is presention request -> so mino doesn't know about ButtonType
-  // void moveMino({required ButtonType buttonType}) {
-  //   List<Block> newBlock = [];
-  //
-  //   switch (buttonType) {
-  //     case ButtonType.left:
-  //       for (Block block in blocks) {
-  //         newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation  - 1)));
-  //       }
-  //       blocks = [...newBlock];
-  //       rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation - 1);
-  //       break;
-  //     case ButtonType.right:
-  //       for (Block block in blocks) {
-  //         newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation  + 1)));
-  //       }
-  //       blocks = [...newBlock];
-  //       rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.xLocation + 1);
-  //       break;
-  //     case ButtonType.down:
-  //       for (Block block in blocks) {
-  //         newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(xLocation: block.blockLocation.yLocation  - 1)));
-  //       }
-  //       blocks = [...newBlock];
-  //       rotateCenterLocation = rotateCenterLocation!.copyWith(xLocation: rotateCenterLocation!.yLocation - 1);
-  //       break;
-  //   }
-  // }
 
   // TODO:: change this to freezed
   Mino copyWith({
@@ -148,7 +121,12 @@ class Mino {
   }
 
   @override
-  bool operator==(o) => o is Mino && o.blocks.map((e) => e.blockLocation.xLocation) == blocks.map((e) => e.blockLocation.xLocation) && blocks.map((e) => e.blockLocation.yLocation) == blocks.map((e) => e.blockLocation.yLocation);
+  bool operator ==(o) =>
+      o is Mino &&
+      o.blocks.map((e) => e.blockLocation.xLocation) ==
+          blocks.map((e) => e.blockLocation.xLocation) &&
+      blocks.map((e) => e.blockLocation.yLocation) ==
+          blocks.map((e) => e.blockLocation.yLocation);
 }
 
 class IMino extends Mino {
@@ -157,7 +135,7 @@ class IMino extends Mino {
     Rotate? blockRotate,
   }) : super(
       color: Colors.lightBlueAccent,
-      rotateCenterLocation: centerBlockLocation.copyWith(yLocation: centerBlockLocation.yLocation - 1),
+      rotateCenterLocation: centerBlockLocation.copyWith(xLocation: centerBlockLocation.xLocation, yLocation: centerBlockLocation.yLocation - 1),
       blocks: [
         Block(
             blockLocation: centerBlockLocation.copyWith(xLocation: centerBlockLocation.xLocation - 1),
@@ -180,7 +158,7 @@ class IMino extends Mino {
   );
 
   @override
-  void changeMinoLocationWhenRotateChange() {
+  Mino changeMinoLocationWhenRotateChange() {
     List<Block> newBlock = [];
     int index = 0;
     switch (blockRotate) {
@@ -196,8 +174,7 @@ class IMino extends Mino {
           );
           index++;
         }
-        blocks = [...newBlock];
-        break;
+        return Mino(color: color, blocks: newBlock, blockRotate: _changeRotate());
       case Rotate.rotate90:
         for (int i = 1; i > -3; i--) {
           newBlock.add(
@@ -210,8 +187,7 @@ class IMino extends Mino {
           );
           index++;
         }
-        blocks = [...newBlock];
-        break;
+        return Mino(color: color, blocks: newBlock, blockRotate: _changeRotate());
       case Rotate.rotate180:
         for (int i = 1; i > -3; i--) {
           newBlock.add(
@@ -224,8 +200,7 @@ class IMino extends Mino {
           );
           index++;
         }
-        blocks = [...newBlock];
-        break;
+        return Mino(color: color, blocks: newBlock, blockRotate: _changeRotate());
       case Rotate.rotate270:
         for (int i = 1; i > -3; i--) {
           newBlock.add(
@@ -238,8 +213,7 @@ class IMino extends Mino {
           );
           index++;
         }
-        blocks = [...newBlock];
-        break;
+        return Mino(color: color, blocks: newBlock, blockRotate: _changeRotate());
     }
   }
 }
