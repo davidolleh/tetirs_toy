@@ -67,7 +67,9 @@ class Mino {
     }
   }
 
-  Mino changeMinoLocationWhenRotateChange() {}
+  Mino changeMinoLocationWhenRotateChange() {
+    return this;
+  }
 
   Mino moveMinoLeft() {
     return Mino(
