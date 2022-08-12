@@ -18,7 +18,13 @@ class MoveService {
     ) {
       return mino;
     }
-    return _minoRepo.moveMinoLeft(mino: mino);
+
+
+    Mino newMino = _minoRepo.moveMinoLeft(mino: mino);
+
+    print(newMino.rotateCenterLocation!);
+
+    return newMino;
   }
 
   Mino moveMinoRight({required Mino mino}) {
@@ -27,7 +33,11 @@ class MoveService {
     ) {
       return mino;
     }
-    return _minoRepo.moveMinoRight(mino: mino);
+
+    Mino newMino = _minoRepo.moveMinoRight(mino: mino);
+
+
+    return newMino;
   }
 
   Mino moveMinoDown({required Mino mino}) {
@@ -35,21 +45,25 @@ class MoveService {
         mino.blocks.map((e) => e.blockLocation.yLocation).contains(1)) {
       return mino;
     }
-    return _minoRepo.moveMinoDown(mino: mino);
+    Mino newMino =  _minoRepo.moveMinoDown(mino: mino);
+
+    return newMino;
   }
 
   Mino rotateMino({required Mino mino}) {
     Mino rotatedMino = _minoRepo.changeMinoLocationWhenRotateChange(mino: mino);
-
-    if (_checkAccBlocksExistInDown(mino: mino, accBlocks: _accRepo.accBlock) ||
-        _checkAccBlocksExistInLeft(mino: mino, accBlocks: _accRepo.accBlock) ||
-        _checkAccBlocksExistInRight(mino: mino, accBlocks: _accRepo.accBlock)
+    if (_checkAccBlocksExistInDown(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
+        _checkAccBlocksExistInLeft(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
+        _checkAccBlocksExistInRight(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
+        rotatedMino.blocks.map((e) => e.blockLocation.yLocation).any((e) => e <= 1)||
+        rotatedMino.maxRightBlockLocation() >= 10 ||
+        rotatedMino.leastLeftBlockLocation() <= 1
     ) {
       return mino;
     }
-
     return rotatedMino;
   }
+
 
   bool minoCantMoveDown({required Mino mino}) {
     return _checkAccBlocksExistInDown(mino: mino, accBlocks: _accRepo.accBlock) || mino.blocks.map((e) => e.blockLocation.yLocation).contains(1);

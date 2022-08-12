@@ -14,7 +14,7 @@ abstract class MinoState extends Equatable {
 }
 
 class MinoInitial extends MinoState {
-  MinoInitial() : super(mino: LMino(centerBlockLocation: const BlockLocation(yLocation: 0, xLocation: 0)));
+  MinoInitial() : super(mino: LMino(rotateCenterLocation: const BlockLocation(yLocation: 0, xLocation: 0)));
 }
 
 class MinoFallingOff extends MinoState {
