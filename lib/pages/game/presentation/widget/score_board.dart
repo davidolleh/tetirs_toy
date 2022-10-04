@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tetris/pages/game/presentation/bloc/score/score_bloc.dart';
+import 'package:tetris/pages/game/presentation/blocs/score/score_bloc.dart';
 
 class ScoreBoard extends StatelessWidget {
   const ScoreBoard({Key? key}) : super(key: key);

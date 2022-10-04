@@ -1,97 +1,9 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:tetris/pages/runtime_game/application/mino/mino_cubit.dart';
-//
-// class GameBoard extends StatelessWidget {
-//   const GameBoard({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Stack(
-//       children: [
-//         BlocBuilder<MinoCubit, MinoState>(
-//           builder: (context, state) {
-//             return GridView.builder(
-//                 itemCount: 264,
-//                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//                   crossAxisCount: 12,
-//                 ),
-//                 itemBuilder: (BuildContext context, int index) {
-//                   if (index <= 11 || index % 12 == 0 || (index + 1) % 12 == 0 ||
-//                       index >= 252) {
-//                     return Container(
-//                       decoration: BoxDecoration(
-//                           color: Colors.grey,
-//                           border: Border.all(
-//                             color: Colors.black,
-//                           )
-//                       ),
-//                     );
-//                   }
-//                   if (index ~/ 12 == state.randomMino.blocks[0].point.y && index % 12 == state.randomMino.blocks[0].point.x){
-//                     return Container(
-//                       decoration: BoxDecoration(
-//                           color: state.randomMino.color,
-//                           border: Border.all(
-//                             color: Colors.black54,
-//                           )
-//                       ),
-//                     );
-//                   }
-//                   if (index ~/ 12 == state.randomMino.blocks[1].point.y && index % 12 == state.randomMino.blocks[1].point.x){
-//                     return Container(
-//                       decoration: BoxDecoration(
-//                           color: state.randomMino.color,
-//                           border: Border.all(
-//                             color: Colors.black54,
-//                           )
-//                       ),
-//                     );
-//                   }
-//                   if (index ~/ 12 == state.randomMino.blocks[2].point.y && index % 12 == state.randomMino.blocks[2].point.x){
-//                     return Container(
-//                       decoration: BoxDecoration(
-//                           color: state.randomMino.color,
-//                           border: Border.all(
-//                             color: Colors.black54,
-//                           )
-//                       ),
-//                     );
-//                   }
-//                   if (index ~/ 12 == state.randomMino.blocks[3].point.y && index % 12 == state.randomMino.blocks[3].point.x){
-//                     return Container(
-//                       decoration: BoxDecoration(
-//                           color: state.randomMino.color,
-//                           border: Border.all(
-//                             color: Colors.black54,
-//                           )
-//                       ),
-//                     );
-//                   }
-//
-//                   return Container(
-//                     decoration: BoxDecoration(
-//                         color: Colors.black54,
-//                         border: Border.all(
-//                           color: Colors.black54,
-//                         )
-//                     ),
-//                   );
-//                 }
-//             );
-//           },
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tetris/domains/entities/block_location.dart';
 import 'package:tetris/domains/entities/game_map.dart';
-import 'package:tetris/pages/game/presentation/bloc/acc/acc_cubit.dart';
-import 'package:tetris/pages/game/presentation/bloc/mino/mino_cubit.dart';
+import 'package:tetris/pages/game/presentation/blocs/acc/acc_cubit.dart';
+import 'package:tetris/pages/game/presentation/blocs/mino/mino_cubit.dart';
 
 class GameMapWidget extends StatefulWidget {
   const GameMapWidget({Key? key}) : super(key: key);

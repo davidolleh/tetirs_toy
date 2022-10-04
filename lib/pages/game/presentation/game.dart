@@ -7,9 +7,9 @@ import 'package:tetris/datas/runtime_game/mino_repo.dart';
 import 'package:tetris/di/injectable.dart';
 import 'package:tetris/domains/services/accumulation_block_service.dart';
 import 'package:tetris/domains/services/move_service.dart';
-import 'package:tetris/pages/game/presentation/bloc/acc/acc_cubit.dart';
-import 'package:tetris/pages/game/presentation/bloc/mino/mino_cubit.dart';
-import 'package:tetris/pages/game/presentation/bloc/score/score_bloc.dart';
+import 'package:tetris/pages/game/presentation/blocs/acc/acc_cubit.dart';
+import 'package:tetris/pages/game/presentation/blocs/mino/mino_cubit.dart';
+import 'package:tetris/pages/game/presentation/blocs/score/score_bloc.dart';
 import 'package:tetris/pages/game/presentation/widget/widgets.dart';
 
 class GamePage extends StatefulWidget {
