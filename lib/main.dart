@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tetris/di/injectable.dart';
 import 'router/router.gr.dart';
 
-void main() {
+void main() async {
+  await configureDI();
+
   runApp(const MyApp());
 }
 

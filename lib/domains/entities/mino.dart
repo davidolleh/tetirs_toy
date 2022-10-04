@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:tetris/core/domain_object/block_location.dart';
-import 'block.dart';
+import 'package:tetris/domains/entities/block.dart';
+import 'package:tetris/domains/entities/block_location.dart';
 
 enum Rotate {
   rotate0,

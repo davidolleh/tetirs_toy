@@ -35,7 +35,7 @@ class AppRouter extends _i3.RootStackRouter {
   @override
   List<_i3.RouteConfig> get routes => [
         _i3.RouteConfig(SelectGameRoute.name, path: '/'),
-        _i3.RouteConfig(GameRoute.name, path: '/game')
+        _i3.RouteConfig(GameRoute.name, path: '/runtime_game')
       ];
 }
 
@@ -50,7 +50,7 @@ class SelectGameRoute extends _i3.PageRouteInfo<void> {
 /// generated route for
 /// [_i2.GamePage]
 class GameRoute extends _i3.PageRouteInfo<void> {
-  const GameRoute() : super(GameRoute.name, path: '/game');
+  const GameRoute() : super(GameRoute.name, path: '/runtime_game');
 
   static const String name = 'GameRoute';
 }

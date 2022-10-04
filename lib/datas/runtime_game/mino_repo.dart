@@ -1,5 +1,5 @@
-import 'package:tetris/core/domain_object/block.dart';
-import 'package:tetris/core/domain_object/mino.dart';
+import 'package:tetris/domains/entities/block.dart';
+import 'package:tetris/domains/entities/mino.dart';
 
 //TODO :: if we need to request in backend mino repo need to have datasource
 class MinoRepo {

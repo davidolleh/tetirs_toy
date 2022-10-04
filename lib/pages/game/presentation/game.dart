@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tetris/pages/game/application/accumulation_block_service.dart';
-import 'package:tetris/pages/game/application/move_service.dart';
-import 'package:tetris/pages/game/data/acc_repo.dart';
-import 'package:tetris/pages/game/data/mino_repo.dart';
+import 'package:tetris/datas/runtime_game/acc_repo.dart';
+import 'package:tetris/datas/runtime_game/mino_repo.dart';
+import 'package:tetris/di/injectable.dart';
+import 'package:tetris/domains/services/accumulation_block_service.dart';
+import 'package:tetris/domains/services/move_service.dart';
 import 'package:tetris/pages/game/presentation/bloc/acc/acc_cubit.dart';
 import 'package:tetris/pages/game/presentation/bloc/mino/mino_cubit.dart';
 import 'package:tetris/pages/game/presentation/bloc/score/score_bloc.dart';
@@ -20,8 +21,6 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   late final Timer _timer;
-  final MinoRepo minoRepo = MinoRepo();
-  final AccRepo accRepo = AccRepo();
 
   late final MinoCubit minoBloc;
 
@@ -29,7 +28,7 @@ class _GamePageState extends State<GamePage> {
   void initState() {
     super.initState();
     minoBloc = MinoCubit(
-        moveService: MoveService(minoRepo: minoRepo, accRepo: accRepo)
+        moveService: MoveService(minoRepo: getIt<MinoRepo>(), accRepo: getIt<AccRepo>())
     );
     _timer = Timer.periodic(
         const Duration(seconds: 1), (timer) {
@@ -50,7 +49,7 @@ class _GamePageState extends State<GamePage> {
         BlocProvider(create: (context) => ScoreBloc(),),
         BlocProvider(create: (context) => minoBloc),
         BlocProvider(create: (context) => AccCubit(
-            accumulateService: AccumulateService(accRepo: accRepo)),
+            accumulateService: AccumulateService(accRepo: getIt<AccRepo>())),
         ),
       ],
       child: Builder(

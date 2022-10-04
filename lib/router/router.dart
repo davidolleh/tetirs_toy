@@ -6,7 +6,7 @@ import 'package:tetris/pages/select_game/presentation/select_game.dart';
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     AutoRoute(page: SelectGamePage, initial: true),
-    AutoRoute(page: GamePage, path: '/game')
+    AutoRoute(page: GamePage, path: '/runtime_game')
   ]
 )
 

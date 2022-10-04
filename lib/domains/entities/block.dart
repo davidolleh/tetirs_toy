@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tetris/core/domain_object/block_location.dart';
+import 'package:tetris/domains/entities/block_location.dart';
 
 part 'block.freezed.dart';
 

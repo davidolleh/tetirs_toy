@@ -1,9 +1,11 @@
-import 'package:tetris/core/domain_object/acc_block.dart';
-import 'package:tetris/core/domain_object/block.dart';
-import 'package:tetris/core/domain_object/mino.dart';
-import 'package:tetris/pages/game/data/acc_repo.dart';
-import 'package:tetris/pages/game/data/mino_repo.dart';
+import 'package:injectable/injectable.dart';
+import 'package:tetris/domains/entities/acc_block.dart';
+import 'package:tetris/domains/entities/block.dart';
+import 'package:tetris/domains/entities/mino.dart';
+import 'package:tetris/datas/runtime_game/acc_repo.dart';
+import 'package:tetris/datas/runtime_game/mino_repo.dart';
 
+@injectable
 class MoveService {
   final MinoRepo _minoRepo;
   final AccRepo _accRepo;

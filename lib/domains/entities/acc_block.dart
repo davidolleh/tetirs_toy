@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import 'block.dart';
+import 'package:tetris/domains/entities/block.dart';
 
 part 'acc_block.freezed.dart';
 

@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:tetris/pages/game/application/mino/mino_cubit.dart';
+// import 'package:tetris/pages/runtime_game/application/mino/mino_cubit.dart';
 //
 // class GameBoard extends StatelessWidget {
 //   const GameBoard({Key? key}) : super(key: key);
@@ -88,8 +88,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tetris/core/domain_object/block_location.dart';
-import 'package:tetris/core/domain_object/game_map.dart';
+import 'package:tetris/domains/entities/block_location.dart';
+import 'package:tetris/domains/entities/game_map.dart';
 import 'package:tetris/pages/game/presentation/bloc/acc/acc_cubit.dart';
 import 'package:tetris/pages/game/presentation/bloc/mino/mino_cubit.dart';
 

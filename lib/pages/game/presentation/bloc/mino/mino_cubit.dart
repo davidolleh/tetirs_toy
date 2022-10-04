@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:tetris/core/domain_object/block_location.dart';
-import 'package:tetris/core/domain_object/mino.dart';
-import 'package:tetris/pages/game/application/move_service.dart';
+import 'package:tetris/domains/entities/block_location.dart';
+import 'package:tetris/domains/entities/mino.dart';
+import 'package:tetris/domains/services/move_service.dart';
 import 'package:tetris/pages/game/presentation/game.dart';
 
 part 'mino_state.dart';

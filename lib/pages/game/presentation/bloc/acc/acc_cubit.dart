@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:tetris/core/domain_object/acc_block.dart';
-import 'package:tetris/core/domain_object/mino.dart';
-import 'package:tetris/pages/game/application/accumulation_block_service.dart';
+import 'package:tetris/domains/entities/acc_block.dart';
+import 'package:tetris/domains/entities/mino.dart';
+import 'package:tetris/domains/services/accumulation_block_service.dart';
 
 part 'acc_state.dart';
 

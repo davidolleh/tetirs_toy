@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:tetris/core/domain_object/acc_block.dart';
-import 'package:tetris/core/domain_object/block.dart';
-import 'package:tetris/core/domain_object/mino.dart';
+import 'package:tetris/domains/entities/acc_block.dart';
+import 'package:tetris/domains/entities/block.dart';
+import 'package:tetris/domains/entities/mino.dart';
 
 class AccRepo {
   final BehaviorSubject<AccBlocks> _accStream = BehaviorSubject.seeded(const AccBlocks(blocks: []));
