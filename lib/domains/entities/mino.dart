@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tetris/domains/entities/block.dart';
 import 'package:tetris/domains/entities/block_location.dart';
 
+
+
 enum Rotate {
   rotate0,
   rotate90,
@@ -12,673 +14,676 @@ enum Rotate {
 }
 
 
-//TODO :: change Mino class to abstract class -> how to make abstract class copyWith function
-// TODO :: this is VO cannot use setter inside this class
-// TODO :: moveLeft, moveRight, moveDown은 스스로 움직이는게 아니라 당하는 것이기에 service단에서 시켜야지
 abstract class Mino {
+  final BlockLocation centerLocation;
   final Color color;
-  final List<Block> blocks;
-  final Rotate blockRotate;
-  final BlockLocation? rotateCenterLocation;
+  final Rotate rotate;
 
+  Mino({required this.centerLocation, required this.color, required this.rotate});
 
-  // TODO:: kind of getter
-  int leastLeftBlockLocation () {
-    int least = blocks[0].blockLocation.xLocation;
-    for (Block block in blocks) {
-      if (block.blockLocation.xLocation < least) {
-        least = block.blockLocation.xLocation;
-      }
-    }
-    return least;
-  }
+  List<Block> drawMino();
+  int leftMost();
+  int rightMost();
+  int downMost();
 
-  //TODO :: getter의 일종
-  int maxRightBlockLocation() {
-    int max = blocks[0].blockLocation.xLocation;
-    for (Block block in blocks) {
-      if (block.blockLocation.xLocation > max) {
-        max = block.blockLocation.xLocation;
-      }
-    }
-    return max;
-  }
-
-  Mino({
-    required this.color,
-    required this.blocks,
-    required this.blockRotate,
-    this.rotateCenterLocation,
-  });
-
-  //TODO :: this is setter
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation});
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation});
-
-  @override
-  bool operator ==(o) =>
-      o is Mino &&
-          o.blocks.map((e) => e.blockLocation.xLocation) ==
-              blocks.map((e) => e.blockLocation.xLocation) &&
-          blocks.map((e) => e.blockLocation.yLocation) ==
-              blocks.map((e) => e.blockLocation.yLocation);
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation});
 }
 
 class IMino extends Mino {
   IMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Color? color,
-    Rotate? blockRotate,
+    required BlockLocation centerLocation,
+    Rotate? rotate
   }) : super(
+      centerLocation: centerLocation,
       color: Colors.lightBlueAccent,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.lightBlueAccent),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.lightBlueAccent),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.lightBlueAccent),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 2, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.lightBlueAccent),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
+      rotate: rotate ?? Rotate.rotate0
   );
-
-
   @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 2, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 2), color: color),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation -2, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-      ];
-    } else {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 2), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-      ];
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 2;
+      case Rotate.rotate180:
+        return centerLocation.yLocation;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
     }
   }
 
   @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation}) {
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 2;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 2;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 2), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 2), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 2), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 2), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
     return IMino(
-        blockRotate: blockRotate ?? this.blockRotate,
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blocks: blocks ?? this.blocks
-    );
-  }
-}
-
-class LMino extends Mino {
-  LMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Rotate? blockRotate,
-  }) : super(
-      color: Colors.orange,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1), color: Colors.orange),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.orange),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.orange),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.orange),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
-  );
-
-  @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-      ];
-    } else {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-      ];
-    }
-  }
-
-  @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation,BlockLocation? centerBlockLocation}) {
-    return LMino(
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blockRotate: blockRotate ?? this.blockRotate,
-        blocks: blocks ?? this.blocks
-    );
-  }
-}
-
-class JMino extends Mino {
-  JMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Rotate? blockRotate,
-  }) : super(
-      color: Colors.blueAccent,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.blueAccent,),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.blueAccent,),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: Colors.blueAccent,),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation), color: Colors.blueAccent,),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
-  );
-
-  @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation), color: color),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation), color: color),
-      ];
-    } else {
-      return [
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-        Block(blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation, yLocation: rotateCenterLocation.yLocation + 1), color: color),
-      ];
-    }
-  }
-
-  @override
-  Mino copyWith({
-    Color? color,
-    List<Block>? blocks,
-    Rotate? blockRotate,
-    BlockLocation? rotateCenterLocation,
-    BlockLocation? centerBlockLocation
-  }) {
-    return JMino(
-        blockRotate: blockRotate ?? this.blockRotate,
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blocks: blocks ?? this.blocks
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
     );
   }
 }
 
 class OMino extends Mino {
   OMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Rotate? blockRotate,
+    required BlockLocation centerLocation,
+    Rotate? rotate
   }) : super(
-      color: Colors.yellow,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: Colors.yellow
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: Colors.yellow
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: Colors.yellow
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: Colors.yellow
-        ),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
   );
 
   @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    return [
-      Block(
-          blockLocation: rotateCenterLocation,
-          color: color
-      ),
-      Block(
-          blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-          color: color
-      ),
-      Block(
-          blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-          color: color
-      ),
-      Block(
-          blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-          color: color
-      ),
-    ];
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation;
+    }
   }
 
   @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation,BlockLocation? centerBlockLocation}) {
-    return OMino(
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blockRotate: blockRotate ?? this.blockRotate,
-        blocks: blocks ?? this.blocks
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
+    }
+  }
+
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
+    );
+  }
+}
+
+class JMino extends Mino {
+  JMino({
+    required BlockLocation centerLocation,
+    Rotate? rotate
+  }) : super(
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
+  );
+  @override
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
+    }
+  }
+
+  @override
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
+    }
+  }
+
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
+    );
+  }
+}
+
+class LMino extends Mino {
+  LMino({
+    required BlockLocation centerLocation,
+    Rotate? rotate
+  }) : super(
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
+  );
+  @override
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
+    }
+  }
+
+  @override
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
+    }
+  }
+
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
     );
   }
 }
 
 class SMino extends Mino {
   SMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Rotate? blockRotate,
+    required BlockLocation centerLocation,
+    Rotate? rotate
   }) : super(
-      color: Colors.lightGreen,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.lightGreen
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.lightGreen
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: Colors.lightGreen
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: Colors.lightGreen
-        ),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
   );
-
   @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: color
-        ),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: color
-        ),
-      ];
-    } else {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-      ];
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
     }
   }
 
   @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation, BlockLocation? centerBlockLocation}) {
-    return SMino(
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blockRotate: blockRotate ?? this.blockRotate,
-        blocks: blocks ?? this.blocks
-    );
-  }
-}
-
-class TMino extends Mino {
-  TMino({
-    required BlockLocation rotateCenterLocation,
-    List<Block>? blocks,
-    Rotate? blockRotate,
-  }) : super(
-      color: Colors.purple,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.purple
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.purple
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.purple
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: Colors.purple
-        ),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
-  );
-
-  @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-          blockLocation: rotateCenterLocation,
-          color: color,
-        ),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-      ];
-    } else {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-      ];
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
     }
   }
 
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
 
   @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation, BlockLocation? centerBlockLocation}) {
-    return TMino(
-        blockRotate: blockRotate ?? this.blockRotate,
-        rotateCenterLocation: rotateCenterLocation ?? this.rotateCenterLocation!,
-        blocks: blocks ?? this.blocks
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
     );
   }
 }
 
 class ZMino extends Mino {
   ZMino({
-    required BlockLocation rotateCenterLocation,
-    Color? color,
-    List<Block>? blocks,
-    Rotate? blockRotate,
+    required BlockLocation centerLocation,
+    Rotate? rotate
   }) : super(
-      color: Colors.red,
-      rotateCenterLocation: rotateCenterLocation,
-      blocks: blocks ?? [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.red
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: Colors.red
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: Colors.red
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: Colors.red
-        ),
-      ],
-      blockRotate: blockRotate ?? Rotate.rotate0
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
   );
-
   @override
-  List<Block> createBlocks({required Rotate rotate, required BlockLocation rotateCenterLocation}) {
-    if (Rotate.rotate0 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: color
-        ),
-      ];
-    }
-    else if (Rotate.rotate90 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-      ];
-    } else if (Rotate.rotate180 == rotate) {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation + 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: color
-        ),
-      ];
-    } else {
-      return [
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1, yLocation: rotateCenterLocation.yLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(xLocation: rotateCenterLocation.xLocation - 1),
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation,
-            color: color
-        ),
-        Block(
-            blockLocation: rotateCenterLocation.copyWith(yLocation: rotateCenterLocation.yLocation + 1),
-            color: color
-        ),
-      ];
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
     }
   }
 
+  @override
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
+    }
+  }
 
   @override
-  Mino copyWith({List<Block>? blocks, Rotate? blockRotate, BlockLocation? rotateCenterLocation, BlockLocation? centerBlockLocation}) {
-    return ZMino(
-        blockRotate: blockRotate ?? this.blockRotate,
-        rotateCenterLocation: centerBlockLocation ?? this.rotateCenterLocation!,
-        blocks: blocks ?? this.blocks
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1, yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
+    );
+  }
+}
+
+class TMino extends Mino {
+  TMino({
+    required BlockLocation centerLocation,
+    Rotate? rotate
+  }) : super(
+      centerLocation: centerLocation,
+      color: Colors.lightBlueAccent,
+      rotate: rotate ?? Rotate.rotate0
+  );
+  @override
+  int downMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.yLocation;
+      case Rotate.rotate90:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate180:
+        return centerLocation.yLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.yLocation - 1;
+    }
+  }
+
+  @override
+  int leftMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation;
+      case Rotate.rotate180:
+        return centerLocation.xLocation - 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation - 1;
+    }
+  }
+
+  @override
+  int rightMost() {
+    switch (rotate) {
+      case Rotate.rotate0:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate90:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate180:
+        return centerLocation.xLocation + 1;
+      case Rotate.rotate270:
+        return centerLocation.xLocation;
+    }
+  }
+
+  @override
+  List<Block> drawMino() {
+    switch(rotate) {
+      case Rotate.rotate0:
+        return [
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+        ];
+      case Rotate.rotate90:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+        ];
+      case Rotate.rotate180:
+        return [
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.xLocation - 1), color: color),
+        ];
+      case Rotate.rotate270:
+        return [
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
+          Block(blockLocation: centerLocation, color: color),
+          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation + 1), color: color),
+        ];
+    }
+  }
+
+  @override
+  Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
+    return IMino(
+        centerLocation: centerLocation ?? this.centerLocation,
+        rotate: rotate ?? this.rotate
     );
   }
 }
