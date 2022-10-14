@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tetris/domains/entities/block_location.dart';
 import 'package:tetris/domains/entities/game_map.dart';
-import 'package:tetris/pages/game/presentation/blocs/acc/acc_cubit.dart';
-import 'package:tetris/pages/game/presentation/blocs/mino/mino_cubit.dart';
+import 'package:tetris/pages/game/presentation/blocs/acc/acc_bloc.dart';
+import 'package:tetris/pages/game/presentation/blocs/mino/mino_bloc.dart';
 
 class GameMapWidget extends StatefulWidget {
   const GameMapWidget({Key? key}) : super(key: key);
@@ -17,15 +17,9 @@ class _GameMapWidgetState extends State<GameMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<MinoCubit, MinoState>(
-      listener: (context, state) {
-        if (state is MinoAccumulation) {
-          context.read<AccCubit>().addBlock(mino: state.mino);
-          context.read<MinoCubit>().fallNewMino();
-        }
-      },
+    return BlocBuilder<MinoBloc, MinoState>(
       builder: (context, minoState) {
-        return BlocBuilder<AccCubit, AccState>(
+        return BlocBuilder<AccBloc, AccState>(
           builder: (context, accState) {
             return GridView.builder(
                 itemCount: gameMap.maxRowBlock * gameMap.maxColumnBlock,
@@ -45,18 +39,17 @@ class _GameMapWidgetState extends State<GameMapWidget> {
                           )
                       ),
                     );
-                    // state.mino.blocks.map((e) => {e.blockLocation.xLocation, e.blockLocation.yLocation}) == {xLocation, yLocation}
-                  } else if (minoState.mino.blocks.map((e) => e.blockLocation).contains(BlockLocation(xLocation: xLocation, yLocation: yLocation))) {
+                  } else if (minoState.movingMinoLocation.contains(BlockLocation(xLocation: xLocation, yLocation: yLocation))) {
                     return Container(
                       decoration: BoxDecoration(
-                          color: minoState.mino.color,
+                          color: minoState.movingMino.color,
                           border: Border.all(
                             color: Colors.black,
                           )
                       ),
                     );
-                  } else if (accState.accBlocks.blocks.map((e) => e.blockLocation).contains((BlockLocation(xLocation: xLocation, yLocation: yLocation)))) {
-                    // int index = accState.accBlocks.blocks.map((e) => e.blockLocation).firstWhere((element) => false);
+                  } else if (accState.accBlocksLocation.contains((BlockLocation(xLocation: xLocation, yLocation: yLocation)))) {
+                    // TODO:: change this to block color
                     return Container(
                       decoration: BoxDecoration(
                           color: Colors.brown,
