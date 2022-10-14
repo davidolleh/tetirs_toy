@@ -51,35 +51,33 @@ abstract class Mino {
 }
 
 class IMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-      const BlockLocation(xLocation: -1, yLocation: 1),
-      const BlockLocation(xLocation: 0, yLocation: 1),
-    ],
-    Offset.offset2 : [
-      const BlockLocation(xLocation: -1, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 1),
-      const BlockLocation(xLocation: 0, yLocation: 1),
-    ],
-    Offset.offset3 : [
       const BlockLocation(xLocation: 2, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: -2, yLocation: 1),
-      const BlockLocation(xLocation: 0, yLocation: 1),
-    ],
-    Offset.offset4 : [
       const BlockLocation(xLocation: -1, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 1),
-      const BlockLocation(xLocation: 1, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-    ],
-    Offset.offset5 : [
       const BlockLocation(xLocation: 2, yLocation: 0),
+    ],
+    Rotate.rotate90 : [
+      const BlockLocation(xLocation: -1, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 1),
       const BlockLocation(xLocation: 0, yLocation: -2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: -1, yLocation: 1),
+      const BlockLocation(xLocation: 1, yLocation: 1),
+      const BlockLocation(xLocation: -2, yLocation: 1),
+      const BlockLocation(xLocation: 1, yLocation: 0),
       const BlockLocation(xLocation: -2, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: -1),
       const BlockLocation(xLocation: 0, yLocation: 2),
     ],
   };
@@ -198,36 +196,34 @@ class IMino extends Mino {
 }
 
 class OMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate90 : [
+      const BlockLocation(xLocation: -1, yLocation: 0),
+      const BlockLocation(xLocation: -1, yLocation: 0),
+      const BlockLocation(xLocation: -1, yLocation: 0),
+      const BlockLocation(xLocation: -1, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
     ],
-    Offset.offset2 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: 0),
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: -1, yLocation: 1),
+      const BlockLocation(xLocation: -1, yLocation: 1),
+      const BlockLocation(xLocation: -1, yLocation: 1),
+      const BlockLocation(xLocation: -1, yLocation: 1),
+      const BlockLocation(xLocation: -1, yLocation: 1),
     ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: -1),
-      const BlockLocation(xLocation: -1, yLocation: 0),
+    Rotate.rotate270 : [
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
+      const BlockLocation(xLocation: 0, yLocation: 1),
     ],
   };
 
@@ -338,7 +334,7 @@ class OMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return OMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
@@ -346,35 +342,33 @@ class OMino extends Mino {
 }
 
 class JMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
     ],
-    Offset.offset2 : [
+    Rotate.rotate90 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 1, yLocation: 0),
+      const BlockLocation(xLocation: 1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 2),
+      const BlockLocation(xLocation: 1, yLocation: 2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: -1),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: -1),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 2),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 2),
     ],
   };
@@ -485,7 +479,7 @@ class JMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return JMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
@@ -493,35 +487,33 @@ class JMino extends Mino {
 }
 
 class LMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
     ],
-    Offset.offset2 : [
+    Rotate.rotate90 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 1, yLocation: 0),
+      const BlockLocation(xLocation: 1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 2),
+      const BlockLocation(xLocation: 1, yLocation: 2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: -1),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: -1),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 2),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 2),
     ],
   };
@@ -631,7 +623,7 @@ class LMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return LMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
@@ -639,38 +631,37 @@ class LMino extends Mino {
 }
 
 class SMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
     ],
-    Offset.offset2 : [
+    Rotate.rotate90 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 1, yLocation: 0),
+      const BlockLocation(xLocation: 1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 2),
+      const BlockLocation(xLocation: 1, yLocation: 2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: -1),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: -1),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 2),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 2),
     ],
   };
+
   SMino({
     required BlockLocation centerLocation,
     Rotate? rotate
@@ -777,7 +768,7 @@ class SMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return SMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
@@ -785,38 +776,37 @@ class SMino extends Mino {
 }
 
 class ZMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
     ],
-    Offset.offset2 : [
+    Rotate.rotate90 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 1, yLocation: 0),
+      const BlockLocation(xLocation: 1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 2),
+      const BlockLocation(xLocation: 1, yLocation: 2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: -1),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: -1),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 2),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 2),
     ],
   };
+
   ZMino({
     required BlockLocation centerLocation,
     Rotate? rotate
@@ -923,7 +913,7 @@ class ZMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return ZMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
@@ -931,35 +921,33 @@ class ZMino extends Mino {
 }
 
 class TMino extends Mino {
-  static final  Map<Offset, List<BlockLocation>> offset = {
-    Offset.offset1 : [
+  static final  Map<Rotate, List<BlockLocation>> offset = {
+    Rotate.rotate0 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 0),
     ],
-    Offset.offset2 : [
+    Rotate.rotate90 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 1, yLocation: 0),
+      const BlockLocation(xLocation: 1, yLocation: -1),
+      const BlockLocation(xLocation: 0, yLocation: 2),
+      const BlockLocation(xLocation: 1, yLocation: 2),
+    ],
+    Rotate.rotate180 : [
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+      const BlockLocation(xLocation: 0, yLocation: 0),
+    ],
+    Rotate.rotate270 : [
       const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 0),
-    ],
-    Offset.offset3 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: -1),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: -1),
-    ],
-    Offset.offset4 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: 0, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 0, yLocation: 2),
-    ],
-    Offset.offset5 : [
-      const BlockLocation(xLocation: 0, yLocation: 0),
-      const BlockLocation(xLocation: 1, yLocation: 2),
-      const BlockLocation(xLocation: 0, yLocation: 0),
       const BlockLocation(xLocation: -1, yLocation: 2),
     ],
   };
@@ -1035,9 +1023,9 @@ class TMino extends Mino {
       case Rotate.rotate180:
         return [
           Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.yLocation - 1), color: color),
-          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation - 1), color: color),
           Block(blockLocation: centerLocation, color: color),
-          Block(blockLocation: centerLocation.copyWith(yLocation: centerLocation.xLocation - 1), color: color),
+          Block(blockLocation: centerLocation.copyWith(xLocation: centerLocation.xLocation + 1), color: color),
         ];
       case Rotate.rotate270:
         return [
@@ -1071,7 +1059,7 @@ class TMino extends Mino {
 
   @override
   Mino copyWith({Rotate? rotate, BlockLocation? centerLocation}) {
-    return IMino(
+    return TMino(
         centerLocation: centerLocation ?? this.centerLocation,
         rotate: rotate ?? this.rotate
     );
