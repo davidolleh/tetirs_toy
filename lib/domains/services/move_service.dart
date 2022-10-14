@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:tetris/domains/entities/acc_block.dart';
-import 'package:tetris/domains/entities/block.dart';
+import 'package:tetris/domains/entities/block_location.dart';
 import 'package:tetris/domains/entities/mino.dart';
 import 'package:tetris/datas/runtime_game/acc_repo.dart';
 import 'package:tetris/datas/runtime_game/mino_repo.dart';
@@ -10,91 +9,90 @@ class MoveService {
   final MinoRepo _minoRepo;
   final AccRepo _accRepo;
 
-  const MoveService({required MinoRepo minoRepo, required AccRepo accRepo})
-      : _minoRepo = minoRepo, _accRepo = accRepo;
+  MoveService({
+    required MinoRepo minoRepo,
+    required AccRepo accRepo
+  }) : _minoRepo = minoRepo,
+        _accRepo = accRepo;
 
-  Mino moveMinoLeft({required Mino mino}) {
-    if (
-    _checkAccBlocksExistInLeft(mino: mino, accBlocks: _accRepo.accBlock) ||
-        mino.leastLeftBlockLocation() <= 1
-    ) {
-      return mino;
+  Stream<Mino> get movingMino => _minoRepo.movingMino;
+
+  void fallNewMino() {
+    _minoRepo.fallNewMino();
+  }
+
+  void moveRight() {
+    if(_checkCanMoveRight()) {
+      _minoRepo.moveMinoRight();
+    }
+  }
+
+  void moveLeft() {
+    if (_checkCanMoveLeft()) {
+      _minoRepo.moveMinoLeft();
+    }
+  }
+
+  void moveDown() {
+    if (_checkCanMoveDown()) {
+      _minoRepo.moveMinoDown();
+    } else {
+      _accRepo.addBlock(addedBlocks: _minoRepo.movingMinoValue.drawMino());
+      _minoRepo.fallNewMino();
+    }
+  }
+
+  bool _checkCanMoveRight() {
+    Mino movingMino = _minoRepo.movingMinoValue;
+    Mino movedMino = movingMino.copyWith(centerLocation: movingMino.centerLocation.copyWith(xLocation: movingMino.centerLocation.xLocation + 1));
+
+    int rightMost = movedMino.rightMost();
+
+    if (rightMost > 10) {
+      return false;
     }
 
 
-    Mino newMino = _minoRepo.moveMinoLeft(mino: mino);
+    List<BlockLocation> accBlocks = _accRepo.accBlockValue.blocks.map((e) => e.blockLocation).toList();
+    List<BlockLocation> movedMinoBlockLocations = movedMino.drawMino().map((e) => e.blockLocation).toList();
 
-    print(newMino.rotateCenterLocation!);
-
-    return newMino;
+    return !movedMinoBlockLocations.any((element) => accBlocks.contains(element));
   }
 
-  Mino moveMinoRight({required Mino mino}) {
-    if (_checkAccBlocksExistInRight(mino: mino, accBlocks: _accRepo.accBlock) ||
-        mino.maxRightBlockLocation() >= 10
-    ) {
-      return mino;
+  bool _checkCanMoveLeft() {
+    Mino movingMino = _minoRepo.movingMinoValue;
+    Mino movedMino = movingMino.copyWith(centerLocation: movingMino.centerLocation.copyWith(xLocation: movingMino.centerLocation.xLocation - 1));
+
+    int leftMost = movedMino.leftMost();
+
+    if (leftMost < 1) {
+      return false;
     }
 
-    Mino newMino = _minoRepo.moveMinoRight(mino: mino);
+    List<BlockLocation> accBlocks = _accRepo.accBlockValue.blocks.map((e) => e.blockLocation).toList();
+    List<BlockLocation> movedMinoBlockLocations = movedMino.drawMino().map((e) => e.blockLocation).toList();
 
-
-    return newMino;
+    return !movedMinoBlockLocations.any((element) => accBlocks.contains(element));
   }
 
-  Mino moveMinoDown({required Mino mino}) {
-    if (_checkAccBlocksExistInDown(mino: mino, accBlocks: _accRepo.accBlock) ||
-        mino.blocks.map((e) => e.blockLocation.yLocation).contains(1)) {
-      return mino;
+  bool _checkCanMoveDown() {
+    Mino movingMino = _minoRepo.movingMinoValue;
+    Mino movedMino = movingMino.copyWith(centerLocation: movingMino.centerLocation.copyWith(yLocation: movingMino.centerLocation.yLocation - 1));
+
+    int downMost = movedMino.downMost();
+
+    if (downMost < 1) {
+      return false;
     }
-    Mino newMino =  _minoRepo.moveMinoDown(mino: mino);
 
-    return newMino;
-  }
+    List<BlockLocation> accBlocks = _accRepo.accBlockValue.blocks.map((e) => e.blockLocation).toList();
 
-  Mino rotateMino({required Mino mino}) {
-    Mino rotatedMino = _minoRepo.changeMinoLocationWhenRotateChange(mino: mino);
-    if (_checkAccBlocksExistInDown(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
-        _checkAccBlocksExistInLeft(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
-        _checkAccBlocksExistInRight(mino: rotatedMino, accBlocks: _accRepo.accBlock) ||
-        rotatedMino.blocks.map((e) => e.blockLocation.yLocation).any((e) => e <= 1)||
-        rotatedMino.maxRightBlockLocation() >= 10 ||
-        rotatedMino.leastLeftBlockLocation() <= 1
-    ) {
-      return mino;
-    }
-    return rotatedMino;
-  }
-
-
-  bool minoCantMoveDown({required Mino mino}) {
-    return _checkAccBlocksExistInDown(mino: mino, accBlocks: _accRepo.accBlock) || mino.blocks.map((e) => e.blockLocation.yLocation).contains(1);
-  }
-
-  bool _checkAccBlocksExistInLeft({required Mino mino, required AccBlocks accBlocks}) {
-    for (Block block in mino.blocks) {
-      if (accBlocks.blocks.map((e) => e.blockLocation).contains(block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation - 1))) {
-        return true;
+    List<BlockLocation> movedMinoBlockLocations = movedMino.drawMino().map((e) => e.blockLocation).toList();
+    for (BlockLocation movedMinoBlockLocation in movedMinoBlockLocations) {
+      if (accBlocks.contains(movedMinoBlockLocation)) {
+        return false;
       }
     }
-    return false;
-  }
-
-  bool _checkAccBlocksExistInRight({required Mino mino, required AccBlocks accBlocks}) {
-    for (Block block in mino.blocks) {
-      if (accBlocks.blocks.map((e) => e.blockLocation).contains(block.blockLocation.copyWith(xLocation: block.blockLocation.xLocation + 1))) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool _checkAccBlocksExistInDown({required Mino mino, required AccBlocks accBlocks}) {
-    for (Block block in mino.blocks) {
-      if (accBlocks.blocks.map((e) => e.blockLocation).contains(block.blockLocation.copyWith(yLocation: block.blockLocation.yLocation - 1))) {
-        return true;
-      }
-    }
-    return false;
+    return true;
   }
 }
