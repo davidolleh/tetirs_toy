@@ -1,26 +1,26 @@
-part of 'mino_cubit.dart';
+part of 'mino_bloc.dart';
 
 @immutable
 abstract class MinoState extends Equatable {
-  final Mino mino;
+  final Mino movingMino;
 
-  const MinoState({required this.mino});
+  List<BlockLocation> get movingMinoLocation => movingMino.drawMino().map((e) => e.blockLocation).toList();
 
+  const MinoState({required this.movingMino});
   @override
-  List<Object?> get props => [
-    runtimeType,
-    mino,
-  ];
+  List<Object?> get props => [runtimeType, movingMino];
 }
 
 class MinoInitial extends MinoState {
-  MinoInitial() : super(mino: LMino(rotateCenterLocation: const BlockLocation(yLocation: 0, xLocation: 0)));
+  MinoInitial(): super(movingMino: IMino(centerLocation: const BlockLocation(xLocation: 1, yLocation: 2)));
 }
 
-class MinoFallingOff extends MinoState {
-  const MinoFallingOff({required super.mino});
+class MinoFalling extends MinoState {
+  const MinoFalling({required super.movingMino});
 }
 
-class MinoAccumulation extends MinoState {
-  const MinoAccumulation({required super.mino});
+class MinoFailed extends MinoState {
+  const MinoFailed({required super.movingMino});
 }
+
+
