@@ -3,57 +3,54 @@ import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:tetris/domains/entities/acc_block.dart';
 import 'package:tetris/domains/entities/block.dart';
-import 'package:tetris/domains/entities/mino.dart';
 
 class AccRepo {
   final BehaviorSubject<AccBlocks> _accStream = BehaviorSubject.seeded(const AccBlocks(blocks: []));
+  Stream<AccBlocks> get accBlockStream => _accStream.asBroadcastStream();
+  AccBlocks get accBlockValue => _accStream.value;
 
-  Stream get accBlockStream => _accStream.asBroadcastStream();
-  AccBlocks get accBlock => _accStream.value;
-
-  AccBlocks addBlocks({required Mino mino}) {
-    AccBlocks newAccBlocks = AccBlocks(blocks: [..._accStream.value.blocks, ...mino.blocks]);
-
-    _accStream.add(newAccBlocks);
-
-
-    newAccBlocks = _deleteRows(rows: mino.blocks.map((block) => block.blockLocation.yLocation).toList());
-
-    _accStream.add(newAccBlocks);
-    //
-    return newAccBlocks;
+  void disposeAccStream() {
+    _accStream.add(const AccBlocks(blocks: []));
   }
 
-
-  bool _checkRowIsFull({required int row}) {
-    return _accStream.value.checkRowIsFull(row: row);
-  }
-
-  AccBlocks _deleteRows({required List<int> rows}) {
-
-    List<int> fullRows = [];
-    for (int row in rows) {
-      if(_checkRowIsFull(row: row)) {
-        fullRows.add(row);
-      }
-    }
-
-    List<Block> newBlocks = [];
-
-    AccBlocks newAccBlocks;
+  AccBlocks _deleteRows(List<int> rows) {
+    List<Block> newBlock = [];
     for (Block block in _accStream.value.blocks) {
-      var cnt = 0;
-      if (!fullRows.contains(block.blockLocation.yLocation)) {
-        for (int row in fullRows) {
-          if (block.blockLocation.yLocation > row) {
-            cnt++;
-          }
+      int cnt = 0;
+      for (int deleteRow in rows) {
+        if (deleteRow < block.blockLocation.yLocation) {
+          cnt++;
         }
-        newBlocks.add(block.copyWith(blockLocation: block.blockLocation.copyWith(yLocation: block.blockLocation.yLocation - cnt)));
+      }
+
+      if (!rows.contains(block.blockLocation.yLocation)) {
+        newBlock.add(block.copyWith(blockLocation: block.blockLocation.copyWith(yLocation: block.blockLocation.yLocation - cnt)));
       }
     }
-    newAccBlocks = AccBlocks(blocks: newBlocks);
 
+    return AccBlocks(blocks: newBlock);
+  }
+
+  AccBlocks addBlock({required List<Block> addedBlocks}) {
+
+    AccBlocks newAccBlocks = AccBlocks(blocks: [..._accStream.value.blocks, ...addedBlocks]);
+    _accStream.add(newAccBlocks);
+
+    final List<int> newRows = [...addedBlocks.map((e) => e.blockLocation.yLocation)];
+    final Set<int> checkRows = newRows.toSet();
+    final List<int> deleteRows = [];
+
+    for (int row in checkRows) {
+      if (_accStream.value.checkRowIsFull(row: row)) {
+        deleteRows.add(row);
+      }
+    }
+
+    if (deleteRows.isNotEmpty) {
+      AccBlocks deleteAccBlocks =  _deleteRows(deleteRows);
+      _accStream.add(deleteAccBlocks);
+      return deleteAccBlocks;
+    }
     return newAccBlocks;
   }
 }
